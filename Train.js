@@ -16,19 +16,41 @@ fs.readdir("./events/", (err, files) => {
 
 client.on("message", message => {
   if (message.author.bot) return;
-  if(message.content.indexOf(config.prefix) !== 0) return;
+  if (message.content.indexOf(config.prefix) !== 0) return;
 
   // Define args
   const args = message.content.slice(config.prefix.length).trim().split(/ +/g);
   const command = args.shift().toLowerCase();
+  let dispatcher;
+  let URL;
+  
+  // When the command is music related
+  if (command == "play" || command == "pause" || command == "resume" || command == "next" || command == "volumn" || command == "stop") {
+    try {
+      if (args[0] !== null) {
+        URL = args[0];
+      }
+      let commandFile = require(`./commands/music.js`);
+      commandFile.run(client, message, args, dispatcher, URL);
+    } catch (err) {
+      console.error(err);
+    }
+  }
 
   // Reads user inputs and look in directory for command js file (CAN BE ATTACKED)
-  try {
-    let commandFile = require(`./commands/${command}.js`);
-    commandFile.run(client, message, args);
-  } catch (err) {
-    console.error(err);
+  else {
+    try {
+      let commandFile = require(`./commands/${command}.js`);
+      commandFile.run(client, message, args);
+    } catch (err) {
+     console.error(err);
+    }
   }
 });
 
 client.login(config.token);
+
+// URL check placeholder
+function isURL() {
+  return true;
+}
