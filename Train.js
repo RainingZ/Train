@@ -24,21 +24,17 @@ client.on("message", message => {
   // Global variables
   var dispatcher;
   var URL;
-  var playing = false;
   var defaultVolume = 0.1;
+  // A global queue of servers storing songs requested
+  var serverQueue = {};
+
   // When the command is music related
   if (command == "play" || command == "pause" || command == "resume" || command == "next" || command == "volume" || command == "stop") {
     try {
-      if (args[0] !== null) {
-        if (isURL(URL)) {
-          URL = args[0];
-        } else {
-          // TODO: getURL from search results (potentially choices)
-          URL = args[0];
-        }
-      }
+      if (command == "play") {URL = args[0];}
+      else {URL = null;}
       let commandFile = require(`./commands/music.js`);
-      commandFile.run(client, message, command, URL);
+      commandFile.run(client, message, command, URL, serverQueue);
     } catch (err) {
       console.error(err);
     }
@@ -56,9 +52,3 @@ client.on("message", message => {
 });
 
 client.login(config.token);
-
-// URL check helper func
-function isURL(URL) {
-  // TODO: Check if the input is an URL
-  return true;
-}
