@@ -2,6 +2,8 @@ const Discord = require("discord.js");
 const client = new Discord.Client();
 const fs = require("fs");
 const config = require("./config.json");
+// A global queue of servers storing songs requested
+const serverQueue = require("./serverQueue.json")
 
 // This loop reads the /events/ dir and attaches each event file to the appropriate event
 fs.readdir("./events/", (err, files) => {
@@ -24,9 +26,8 @@ client.on("message", message => {
   // Global variables
   var dispatcher;
   var URL;
+  // TODO: Volume should be a server variable under serverQueue (serverQueue[id].defaultVolume)
   var defaultVolume = 0.1;
-  // A global queue of servers storing songs requested
-  var serverQueue = {};
 
   // When the command is music related
   if (command == "play" || command == "pause" || command == "resume" || command == "next" || command == "volume" || command == "stop") {
