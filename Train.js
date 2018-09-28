@@ -30,8 +30,11 @@ client.on("message", message => {
   // When the command is music related
   if (command == "play" || command == "pause" || command == "resume" || command == "next" || command == "volume" || command == "stop") {
     try {
-      if (command == "play") {URL = args[0];}
-      else {URL = "";}
+      if (command == "play") {
+        URL = args[0];
+      } else {
+        URL = "";
+      }
       let commandFile = require(`./commands/music.js`);
       commandFile.run(client, message, command, URL);
     } catch (err) {

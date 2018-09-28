@@ -10,6 +10,8 @@ https://nodejs.org/en/
 npm init -y
 npm i -S discord.js
 npm i -S node-opus
+npm i -S youtube-playlist
+npm i -S ytdl-core
 ```
 #### FFmpeg
 https://ffmpeg.zeranoe.com/builds/
