@@ -26,16 +26,14 @@ client.on("message", message => {
   // Global variables
   var dispatcher;
   var URL;
-  // TODO: Volume should be a server variable under serverQueue (serverQueue[id].defaultVolume)
-  var defaultVolume = 0.1;
 
   // When the command is music related
   if (command == "play" || command == "pause" || command == "resume" || command == "next" || command == "volume" || command == "stop") {
     try {
       if (command == "play") {URL = args[0];}
-      else {URL = null;}
+      else {URL = "";}
       let commandFile = require(`./commands/music.js`);
-      commandFile.run(client, message, command, URL, serverQueue);
+      commandFile.run(client, message, command, URL);
     } catch (err) {
       console.error(err);
     }
