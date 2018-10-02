@@ -1,5 +1,6 @@
 const yt = require('ytdl-core');
 const ytlist = require('youtube-playlist');
+const ytsearch = require('youtube-search');
 const fs = require("fs");
 
 const config = require("./../config.json");
@@ -162,12 +163,15 @@ function join_play(song, message) {
         passes: 1,
         volume: serverQueue[message.guild.id].defaultVolume
       });
-      // Listener for dispatcher "end", currently not checking for error
+
+      // Listener for dispatcher "end"
       dispatcher.on('end', () => {
         // Stop playing and leave the channel if there is no song queued
         if (serverQueue[message.guild.id].songs.length == 0) {
           serverQueue[message.guild.id].playing = false;
-          message.member.voiceChannel.leave();
+          // This allows user to stop the bot from a diff channel
+          message.guild.voiceConnection.disconnect();
+          // message.member.voiceChannel.leave();
         }
         // Only play next if there is another song queued
         else {
@@ -175,6 +179,23 @@ function join_play(song, message) {
         }
         fs.writeFile("./serverQueue.json", JSON.stringify(serverQueue), (err) => console.error);
       });
+
+      // Listener for dispatcher "error"
+      dispatcher.on('error', (err) => {
+        return message.channel.sendMessage('error: ' + err).then(() => {
+          if (serverQueue[message.guild.id].songs.length == 0) {
+            serverQueue[message.guild.id].playing = false;
+            message.guild.voiceConnection.disconnect();
+            // message.member.voiceChannel.leave();
+          }
+          // Only play next if there is another song queued
+          else {
+            join_play(serverQueue[message.guild.id].songs.shift(), message);
+          }
+          fs.writeFile("./serverQueue.json", JSON.stringify(serverQueue), (err) => console.error);
+        });
+      });
+
     })
     .catch(console.error);
 }
